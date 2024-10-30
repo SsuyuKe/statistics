@@ -1,4 +1,5 @@
 import SvgIcon from '@/components/SvgIcon'
+import React from 'react'
 
 const Home = () => {
   return (

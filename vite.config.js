@@ -1,10 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'path'
 import tailwindcss from 'tailwindcss'
+import path from 'path'
 import { fileURLToPath, URL } from 'node:url'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import AutoImport from 'unplugin-auto-import/vite'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // https://vite.dev/config/
 export default defineConfig({
