@@ -1,11 +1,16 @@
-import SvgIcon from "@/components/SvgIcon";
+import SvgIcon from '@/components/SvgIcon'
 
 const Home = () => {
   return (
     <div className="flex px-5">
       <aside className="w-20 h-screen pt-3 border border-white border-solid">
-        <div className="bg-[#23252A] py-3 rounded-xl">
-          <SvgIcon name="turtle" width={18} height={18} />
+        <div className="bg-[#23252A] py-3 rounded-xl flex flex-col items-center">
+          <div className="w-8 h-[30px] rounded-xl relative bg-[#383838]">
+            <SvgIcon
+              name="turtle"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            />
+          </div>
         </div>
       </aside>
       <div className="flex flex-col w-full">
@@ -32,7 +37,7 @@ const Home = () => {
         </main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

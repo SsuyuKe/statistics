@@ -1,4 +1,4 @@
-import Home from "@/pages/Home";
-import NotFound from "@/pages/NotFound";
+import Home from '@/pages/Home'
+import NotFound from '@/pages/NotFound'
 
-export { Home, NotFound };
+export { Home, NotFound }
