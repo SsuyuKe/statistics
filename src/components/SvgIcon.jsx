@@ -8,7 +8,8 @@ const SvgIcon = (props) => {
     <svg
       className={className}
       aria-hidden="true"
-      style={{ width: `${width}px`, height: `${height}px` }}>
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
       <use xlinkHref={symbolId} fill={color}></use>
     </svg>
   )
