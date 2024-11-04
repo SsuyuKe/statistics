@@ -30,18 +30,20 @@ L.Marker.prototype.options.icon = IguanaIcon
 
 const AnimalMap = () => {
   return (
-    <MapContainer
-      center={mapData.center}
-      zoom={13}
-      style={{ height: '400px', width: '100%' }}
-    >
-      <TileLayer url={OSMUrl_light} attribution={OSMAttribute} />
-      {mapData.locations.map((location) => (
-        <Marker key={location.id} position={location.coords}>
-          <Popup>{location.popup}</Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+    <div className="h-[400px] rounded-[10px] overflow-hidden">
+      <MapContainer
+        center={mapData.center}
+        zoom={13}
+        style={{ height: '400px', width: '100%' }}
+      >
+        <TileLayer url={OSMUrl_light} attribution={OSMAttribute} />
+        {mapData.locations.map((location) => (
+          <Marker key={location.id} position={location.coords}>
+            <Popup>{location.popup}</Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   )
 }
 
