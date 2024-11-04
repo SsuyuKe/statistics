@@ -4,6 +4,7 @@ import PieChart from '@/components/PieChart'
 import BarChart from '@/components/BarChart'
 import LineChart from '@/components/LineChart'
 import AnimalMap from '@/components/AnimalMap'
+import MonitoringToggle from '@/components/MonitoringToggle'
 
 const statisticsCards = [
   {
@@ -31,7 +32,14 @@ const statisticsCards = [
     number: '59'
   }
 ]
+const toggleMapModeOptions = [
+  { label: '亮模式', value: 'lightMode' },
+  { label: '暗模式', value: 'darkMode' }
+]
 const Home = () => {
+  const handleToggleMapModeChange = (e) => {
+    console.log(e)
+  }
   return (
     <>
       <div className="grid grid-cols-2 gap-3 mb-4">
@@ -40,8 +48,7 @@ const Home = () => {
           {statisticsCards.map((item) => (
             <div
               key={item.title}
-              className="rounded-[10px] bg-[#23252A] text-white pt-3 pl-3 relative"
-            >
+              className="rounded-[10px] bg-[#23252A] text-white pt-3 pl-3 relative">
               <IconButton
                 name={item.icon}
                 width={36}
@@ -59,7 +66,13 @@ const Home = () => {
         </div>
       </div>
       <BarChart className="mb-4" />
-      <LineChart className="mb-4" />
+      <LineChart />
+      <div className="my-4 flex justify-end">
+        <MonitoringToggle
+          options={toggleMapModeOptions}
+          onChange={handleToggleMapModeChange}
+        />
+      </div>
       <AnimalMap />
     </>
   )

@@ -50,8 +50,6 @@ const locationDataWithColor = locationData.map((item, index) => ({
   percentage: Math.floor((item.count / total) * 100)
 }))
 
-console.log(locationDataWithColor)
-
 const PieChart = () => {
   const chartRef = useRef(null)
   useEffect(() => {

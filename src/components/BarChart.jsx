@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import * as echarts from 'echarts'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
+import Select from '@/components/Select'
 
 const months = [
   '1月',
@@ -26,8 +27,18 @@ const categories = [
   '幼蜥'
 ]
 
+const yearOptions = [
+  { label: 2024, value: 2024 },
+  { label: 2023, value: 2023 },
+  { label: 2022, value: 2022 },
+  { label: 2021, value: 2021 }
+]
+
 const BarChart = ({ className }) => {
   const chartRef = useRef(null)
+  const handleSelectYear = (e) => {
+    console.log(e)
+  }
 
   useEffect(() => {
     const myChart = echarts.init(chartRef.current)
@@ -64,7 +75,7 @@ const BarChart = ({ className }) => {
       grid: {
         left: '0', // 左边距
         right: '0', // 右边距
-        top: '40px', // 上边距
+        top: '60px', // 上边距
         bottom: '0', // 下边距
         containLabel: true // 确保标签在图表边缘内
       },
@@ -121,7 +132,13 @@ const BarChart = ({ className }) => {
   }, [])
 
   return (
-    <div className={clsx('bg-[#23252A] rounded-[10px] p-5', className)}>
+    <div
+      className={clsx('bg-[#23252A] rounded-[10px] p-5 relative', className)}>
+      <Select
+        options={yearOptions}
+        onChange={handleSelectYear}
+        className="absolute top-[20px] right-[20px] z-50"
+      />
       <div ref={chartRef} style={{ width: '100%', height: '400px' }} />
     </div>
   )
