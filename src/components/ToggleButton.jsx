@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Radio } from 'antd'
 
-const MonitoringToggle = ({ options, onChange, className }) => {
+const ToggleButton = ({ options, onChange, className }) => {
   return (
     <Radio.Group
       className={className}
@@ -18,9 +18,9 @@ const MonitoringToggle = ({ options, onChange, className }) => {
   )
 }
 
-export default MonitoringToggle
+export default ToggleButton
 
-MonitoringToggle.propTypes = {
+ToggleButton.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,

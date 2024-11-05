@@ -1,7 +1,7 @@
 import React from 'react'
 import IconButton from '@/components/IconButton'
 import { Outlet } from 'react-router-dom'
-import MonitoringToggle from '@/components/MonitoringToggle'
+import ToggleButton from '@/components/ToggleButton'
 import LocationSelect from '@/components/LocationSelect'
 import SwitchButton from '@/components/SwitchButton'
 
@@ -51,7 +51,7 @@ const Layout = () => {
             <SwitchButton onClick={handleSwitchLocation} className="mr-5">
               行政區
             </SwitchButton>
-            <MonitoringToggle
+            <ToggleButton
               className="mr-5"
               options={togglePageOptions}
               onChange={handleTogglePageChange}

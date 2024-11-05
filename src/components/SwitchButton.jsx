@@ -15,7 +15,8 @@ const SwitchButton = ({ style, className, onClick, children }) => {
         'switch-btn flex justify-between border border-solid border-[#3E3E3E] font-bold',
         className
       )}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <IconButton
         name="administrative-district"
         bgColor="#D9D9D9"

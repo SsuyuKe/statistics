@@ -134,7 +134,8 @@ const LineChart = ({ className }) => {
 
   return (
     <div
-      className={clsx('bg-[#23252A] rounded-[10px] p-5 relative', className)}>
+      className={clsx('bg-[#23252A] rounded-[10px] p-5 relative', className)}
+    >
       <Select
         onChange={handleSelectYear}
         options={yearOptions}

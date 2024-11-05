@@ -133,7 +133,8 @@ const BarChart = ({ className }) => {
 
   return (
     <div
-      className={clsx('bg-[#23252A] rounded-[10px] p-5 relative', className)}>
+      className={clsx('bg-[#23252A] rounded-[10px] p-5 relative', className)}
+    >
       <Select
         options={yearOptions}
         onChange={handleSelectYear}

@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import ToggleButton from '@/components/ToggleButton'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
@@ -15,9 +17,15 @@ const mapData = {
 }
 
 const OSMUrl_light = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-// const CartoDBUrl_dark = 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+const CartoDBUrl_dark =
+  'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
 const OSMAttribute =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+const toggleMapModeOptions = [
+  { label: '亮模式', value: 'lightMode' },
+  { label: '暗模式', value: 'darkMode' }
+]
 
 const IguanaIcon = L.icon({
   iconUrl: Iguana,
@@ -28,23 +36,43 @@ const IguanaIcon = L.icon({
 
 L.Marker.prototype.options.icon = IguanaIcon
 
-const AnimalMap = () => {
+const AnimalMap = ({ className }) => {
+  const [url, setUrl] = useState(OSMUrl_light)
+  const handleToggleMapModeChange = (e) => {
+    const mode = e.target.value
+    if (mode === 'darkMode') {
+      setUrl(CartoDBUrl_dark)
+    } else {
+      setUrl(OSMUrl_light)
+    }
+  }
   return (
-    <div className="h-[400px] rounded-[10px] overflow-hidden">
-      <MapContainer
-        center={mapData.center}
-        zoom={13}
-        style={{ height: '400px', width: '100%' }}
-      >
-        <TileLayer url={OSMUrl_light} attribution={OSMAttribute} />
-        {mapData.locations.map((location) => (
-          <Marker key={location.id} position={location.coords}>
-            <Popup>{location.popup}</Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+    <div className={className}>
+      <div className="mb-4 flex justify-end">
+        <ToggleButton
+          options={toggleMapModeOptions}
+          onChange={handleToggleMapModeChange}
+        />
+      </div>
+      <div className="h-[400px] rounded-[10px] overflow-hidden">
+        <MapContainer
+          center={mapData.center}
+          zoom={13}
+          style={{ height: '400px', width: '100%' }}>
+          <TileLayer url={url} attribution={OSMAttribute} />
+          {mapData.locations.map((location) => (
+            <Marker key={location.id} position={location.coords}>
+              <Popup>{location.popup}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
     </div>
   )
 }
 
 export default AnimalMap
+
+AnimalMap.propTypes = {
+  className: PropTypes.string
+}

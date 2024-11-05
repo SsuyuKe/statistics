@@ -24,18 +24,17 @@ body {
   min-width: 1440px;
 }
 
-
 .ant-radio-group {
-  background-color: #1D1D1E !important;
-  border: 1px solid #3E3E3E !important;
+  background-color: #1d1d1e !important;
+  border: 1px solid #3e3e3e !important;
   border-radius: 8px;
 }
 .ant-radio-button-wrapper {
-  background-color: #1D1D1E;
-  border-color: #3E3E3E !important;
+  background-color: #1d1d1e;
+  border-color: #3e3e3e !important;
   border: none !important;
   font-weight: bold;
-  color: #7B7B7B !important;
+  color: #7b7b7b !important;
   padding: 0 28px;
   &:active {
     color: #fff;
@@ -47,23 +46,23 @@ body {
   &.ant-radio-button-wrapper-checked {
     border-radius: 8px;
     border: none !important;
-    background-color: #3B3B3B !important;
+    background-color: #3b3b3b !important;
     color: #fff !important;
   }
 }
 
 .switch-btn {
-  background-color: #1D1D1E !important;
+  background-color: #1d1d1e !important;
 }
 
 .ant-select-selector {
   border-radius: 8px !important;
-  border-color: #3E3E3E !important;
-  background: #1D1D1E !important;
+  border-color: #3e3e3e !important;
+  background: #1d1d1e !important;
   .ant-select-selection-item {
     color: #fff !important;
   }
 }
 .ant-select-arrow {
-  color: #7C7C7C !important;
+  color: #7c7c7c !important;
 }
