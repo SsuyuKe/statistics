@@ -1,4 +1,5 @@
-import Home from '@/pages/Home'
+import AdministrativeDistrict from '@/pages/AdministrativeDistrict'
+import Waters from '@/pages/Waters'
 import NotFound from '@/pages/NotFound'
 
-export { Home, NotFound }
+export { AdministrativeDistrict, Waters, NotFound }

@@ -19,7 +19,14 @@ export default [
       }
     }
   },
-  { languageOptions: { globals: globals.browser } },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        process: 'readonly'
+      }
+    }
+  },
   pluginJs.configs.recommended,
   pluginReact.configs.flat.recommended,
   eslintConfigPrettier

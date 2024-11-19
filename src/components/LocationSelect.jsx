@@ -17,7 +17,7 @@ const LocationSelect = ({ className, onChange, options }) => {
   return (
     <Select
       defaultValue={optionsWithIcon[0].value}
-      className={clsx(className, 'w-[148px]')}
+      className={clsx(className, 'w-[148px] location-select')}
       onChange={onChange}
       options={optionsWithIcon}
     />

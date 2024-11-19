@@ -1,24 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import IconButton from '@/components/IconButton'
+import ToggleButton from '@/components/ToggleButton'
 import LocationSelect from '@/components/LocationSelect'
 import SwitchButton from '@/components/SwitchButton'
 
 const pageButtons = ['iguana', 'monkey', 'bee']
 
+const togglePageOptions = [
+  { label: '監測', value: 'Monitoring' },
+  { label: '通報', value: 'Reporting' }
+]
 const locationOptions = [
   { value: '全部', label: '全部' },
   { value: '仁武區', label: '仁武區' },
   { value: '前金區', label: '前金區' },
   { value: '大寮區', label: '大寮區' }
 ]
-const Layout = () => {
+const LayoutWithToggle = () => {
   const navigate = useNavigate()
+  const [activeComponent, setActiveComponent] = useState('Monitoring')
+
   const handleLocationChange = (e) => {
     console.log(e)
-  }
-  const handleSwitchLocation = (url) => {
-    navigate(url)
   }
   return (
     <div className="flex px-5 pb-[54px] w-full">
@@ -41,12 +45,17 @@ const Layout = () => {
           </div>
           <div className="flex items-center">
             <SwitchButton
-              onClick={() => handleSwitchLocation('/')}
+              onClick={() => navigate('/waters')}
               className="mr-5"
-              icon="waters"
+              icon="administrative-district"
             >
-              水域
+              行政區
             </SwitchButton>
+            <ToggleButton
+              className="mr-5"
+              options={togglePageOptions}
+              onChange={(e) => setActiveComponent(e.target.value)}
+            />
             <LocationSelect
               onChange={handleLocationChange}
               options={locationOptions}
@@ -54,11 +63,11 @@ const Layout = () => {
           </div>
         </header>
         <main className="flex-1 pl-4">
-          <Outlet />
+          <Outlet context={{ activeComponent }} />
         </main>
       </div>
     </div>
   )
 }
 
-export default Layout
+export default LayoutWithToggle

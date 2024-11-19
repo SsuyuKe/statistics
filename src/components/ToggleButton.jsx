@@ -8,7 +8,8 @@ const ToggleButton = ({ options, onChange, className }) => {
       className={className}
       buttonStyle="solid"
       defaultValue={options[0].value}
-      onChange={onChange}>
+      onChange={onChange}
+    >
       {options.map((item) => (
         <Radio.Button key={item.value} value={item.value}>
           {item.label}

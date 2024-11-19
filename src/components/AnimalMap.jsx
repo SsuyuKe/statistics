@@ -58,7 +58,8 @@ const AnimalMap = ({ className }) => {
         <MapContainer
           center={mapData.center}
           zoom={13}
-          style={{ height: '400px', width: '100%' }}>
+          style={{ height: '400px', width: '100%' }}
+        >
           <TileLayer url={url} attribution={OSMAttribute} />
           {mapData.locations.map((location) => (
             <Marker key={location.id} position={location.coords}>

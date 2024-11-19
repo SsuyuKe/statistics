@@ -25,7 +25,7 @@ const yearOptions = [
   { label: 2021, value: 2021 }
 ]
 
-const LineChart = ({ className }) => {
+const LineChart = ({ className, lineType }) => {
   const chartRef = useRef(null)
   const handleSelectYear = (e) => {
     console.log(e)
@@ -49,11 +49,31 @@ const LineChart = ({ className }) => {
       62 // 每月总数数据
     ]
 
+    const areaStyle = {
+      administrativeDistrict: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: '#4DC39F' }, // 顶部颜色
+          { offset: 0.5, color: '#2B755E' }, // 中间颜色
+          { offset: 1, color: 'rgba(50, 135, 109, 0)' } // 底部透明色
+        ])
+      },
+      waters: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: '#1B3586' }, // 从顶部开始的颜色
+          { offset: 1, color: 'rgba(53, 76, 148, 0)' } // 底部透明色
+        ])
+      }
+    }
+    const lineColor = {
+      administrativeDistrict: '#42A486',
+      waters: '#6B8DF8'
+    }
+
     const option = {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          type: 'line'
+          lineType: 'line'
         }
       },
       grid: {
@@ -101,17 +121,11 @@ const LineChart = ({ className }) => {
           data: totalData,
           smooth: true, // 线条平滑
           lineStyle: {
-            color: '#42A486', // 折线颜色
+            color: lineColor[lineType], // 折线颜色
             width: 2
           },
           symbol: 'none', // 移除端点
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#4DC39F' }, // 顶部颜色
-              { offset: 0.5, color: '#2B755E' }, // 中间颜色
-              { offset: 1, color: 'rgba(50, 135, 109, 0)' } // 底部透明色
-            ])
-          }
+          areaStyle: areaStyle[lineType]
         }
       ]
     }
@@ -151,5 +165,6 @@ const LineChart = ({ className }) => {
 export default LineChart
 
 LineChart.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  lineType: PropTypes.oneOf(['administrativeDistrict', 'waters']).isRequired
 }

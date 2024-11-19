@@ -1,17 +1,34 @@
 import React from 'react'
 import { createBrowserRouter } from 'react-router-dom'
-import { Home, NotFound } from '@/pages'
+import { AdministrativeDistrict, Waters, NotFound } from '@/pages'
 import Layout from '@/components/Layout'
+import LayoutWithToggle from '@/components/LayoutWithToggle'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <LayoutWithToggle />,
     children: [
       {
         path: '/',
-        element: <Home />
-      },
+        element: <AdministrativeDistrict />
+      }
+    ]
+  },
+  {
+    path: '/waters',
+    element: <Layout />,
+    children: [
+      {
+        path: '/waters',
+        element: <Waters />
+      }
+    ]
+  },
+  {
+    path: '*',
+    element: <Layout />,
+    children: [
       {
         path: '*',
         element: <NotFound />

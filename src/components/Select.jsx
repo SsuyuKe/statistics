@@ -7,7 +7,7 @@ const TSelect = ({ className, onChange, options }) => {
   return (
     <Select
       defaultValue={options[0].value}
-      className={clsx(className, 'w-[148px]')}
+      className={clsx(className, 'w-[148px] t-select')}
       onChange={onChange}
       options={options}
     />
