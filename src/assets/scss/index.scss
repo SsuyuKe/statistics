@@ -68,18 +68,72 @@ body {
 .t-select .ant-select-arrow {
   color: #7c7c7c !important;
 }
-
-// .location-select
-.ant-select-dropdown {
+// map select
+.map-select {
+  border: none !important;
+  height: 40px;
+  .ant-select-selector {
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border: 0 !important;
+    border-radius: 24px;
+  }
+}
+.map-select-dark {
+  border: none !important;
+  height: 40px;
+  &.ant-select-open .ant-select-selection-item {
+    color: #fff !important;
+  }
+  .ant-select-selector {
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border: 0 !important;
+    border-radius: 24px;
+    background-color: rgba(51, 51, 54, 0.7) !important;
+    color: #fff;
+  }
+  .ant-select-arrow {
+    color: #fff !important;
+  }
+}
+.map-dropdown.ant-select-dropdown {
+  background: #fafafa !important;
+  .ant-select-item.ant-select-item-option {
+    color: rgba(28, 28, 28, 1) !important;
+  }
+  .ant-select-item.ant-select-item-option:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
+  .ant-select-item.ant-select-item-option.ant-select-item-option-selected {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
+}
+// .dark-dropdown
+.dark-dropdown.ant-select-dropdown {
   background: #1d1d1e !important;
   border: 1px solid #3e3e3e !important;
+  .ant-select-item.ant-select-item-option {
+    color: #fff !important;
+  }
+  .ant-select-item.ant-select-item-option:hover {
+    background: #3e3e3e !important;
+  }
+  .ant-select-item.ant-select-item-option.ant-select-item-option-selected {
+    background: #3e3e3e !important;
+  }
 }
-.ant-select-item.ant-select-item-option {
-  color: #fff !important;
+
+.popup-dark .leaflet-popup-content-wrapper {
+  background: #333336b2;
 }
-.ant-select-item.ant-select-item-option:hover {
-  background: #3e3e3e !important;
+.leaflet-marker-icon {
+  width: auto !important;
+  height: auto !important;
+  border-radius: 50%;
+  border: none;
 }
-.ant-select-item.ant-select-item-option.ant-select-item-option-selected {
-  background: #3e3e3e !important;
+.leaflet-popup-content {
+  width: 150px !important;
+}
+.leaflet-popup-close-button {
+  display: none;
 }

@@ -3,21 +3,25 @@ import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import { Select } from 'antd'
 
-const TSelect = ({ className, onChange, options }) => {
+const MapSelect = ({ className, onChange, options, darkMode }) => {
   return (
     <Select
       defaultValue={options[0].value}
-      className={clsx('w-[148px] t-select', className)}
-      popupClassName="dark-dropdown"
+      className={clsx(
+        'w-[148px]',
+        `${darkMode ? 'map-select-dark' : 'map-select'}`,
+        className
+      )}
+      popupClassName={`${darkMode ? 'dark-dropdown' : 'map-dropdown'}`}
       onChange={onChange}
       options={options}
     />
   )
 }
 
-export default TSelect
+export default MapSelect
 
-TSelect.propTypes = {
+MapSelect.propTypes = {
   options: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -27,5 +31,6 @@ TSelect.propTypes = {
     })
   ).isRequired,
   className: PropTypes.string,
+  darkMode: PropTypes.boolean,
   onChange: PropTypes.func.isRequired
 }

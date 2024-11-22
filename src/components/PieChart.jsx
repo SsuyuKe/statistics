@@ -43,7 +43,6 @@ const PieChart = ({ data, title, className }) => {
         },
         series: [
           {
-            name: '统计',
             type: 'pie',
             radius: ['75%', '100%'],
             avoidLabelOverlap: false,
@@ -54,13 +53,6 @@ const PieChart = ({ data, title, className }) => {
             },
             label: {
               show: false
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: '20',
-                fontWeight: 'bold'
-              }
             },
             data: locationDataWithColor.map((item) => ({
               value: item.amount,
@@ -97,30 +89,34 @@ const PieChart = ({ data, title, className }) => {
           <h3 className="mb-[52px] text-white text-xl font-bold mr-5">
             {title}
           </h3>
-          <button
-            onClick={handlePrev}
-            disabled={currentPage === 0}
-            className="bg-white rounded-full relative w-8 h-8 mr-2"
-          >
-            <SvgIcon
-              name="arrow-left"
-              width={10}
-              height={8}
-              className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"
-            />
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={currentPage === totalPages - 1}
-            className="bg-white rounded-full relative w-8 h-8"
-          >
-            <SvgIcon
-              name="arrow-right"
-              width={10}
-              height={8}
-              className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"
-            />
-          </button>
+          {locationDataWithColor.length > 9 && (
+            <>
+              <button
+                onClick={handlePrev}
+                disabled={currentPage === 0}
+                className="bg-white rounded-full relative w-8 h-8 mr-2"
+              >
+                <SvgIcon
+                  name="arrow-left"
+                  width={10}
+                  height={8}
+                  className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"
+                />
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages - 1}
+                className="bg-white rounded-full relative w-8 h-8"
+              >
+                <SvgIcon
+                  name="arrow-right"
+                  width={10}
+                  height={8}
+                  className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"
+                />
+              </button>
+            </>
+          )}
         </div>
         <div className="min-w-[240px] relative">
           <div className="min-h-[240px]" ref={chartRef} />

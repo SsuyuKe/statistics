@@ -4,83 +4,32 @@ import BarChart from '@/components/BarChart'
 import LineChart from '@/components/LineChart'
 import AnimalMap from '@/components/AnimalMap'
 import AnalysisCard from '@/components/AnalysisCard'
-
 import { adApi } from '@/api/module/ad.js'
+import {
+  getPieChartData,
+  getBarChartDataForIguana,
+  getLineChartData
+} from '@/assets/js/chartData.js'
+import { monthOptions } from '@/assets/js/constant.js'
 
 const Monitoring = () => {
-  const [chartData, setChartData] = useState([])
-  const getCatch = async () => {
-    const data = await adApi.getCatch()
-    const formattedData = {}
-    for (const item of data) {
-      if (formattedData[item.district]) {
-        formattedData[item.district] += item.amount
-      } else {
-        formattedData[item.district] = item.amount
-      }
-    }
-    setChartData(
-      Object.entries(formattedData).map((item) => ({
-        district: item[0],
-        amount: item[1]
-      }))
-    )
-  }
-  const getNonCatch = async () => {
-    const data = await adApi.getNonCatch()
-    console.log(data)
-    // const formattedData = {}
-    // for (const item of data) {
-    //   if (formattedData[item.location]) {
-    //     formattedData[item.location] += item.amount
-    //   } else {
-    //     formattedData[item.location] = item.amount
-    //   }
-    // }
-    // setChartData(
-    //   Object.entries(formattedData).map((item) => ({
-    //     location: item[0],
-    //     amount: item[1]
-    //   }))
-    // )
-  }
+  const [pieChartData, setPieChartData] = useState([])
+  const [barChartData, setBarChartData] = useState([])
+  const [lineChartData, setLineChartData] = useState([])
+
   const getMonitor = async () => {
     const data = await adApi.getMonitor()
-    console.log(data)
-
-    // data.for
-    // {
-    //   maleLarge: {
-    //     type: Number,
-    //     required: true
-    //   },
-    //   femaleLarge: {
-    //     type: Number,
-    //     required: true
-    //   },
-    //   maleMedium: {
-    //     type: Number,
-    //     required: true
-    //   },
-    //   femaleMedium: {
-    //     type: Number,
-    //     required: true
-    //   },
-    //   juvenile: {
-    //     type: Number,
-    //     required: true
-    //   }
-    // }
+    setPieChartData(getPieChartData(data))
+    setBarChartData(getBarChartDataForIguana(data))
+    setLineChartData(getLineChartData(data))
   }
   useEffect(() => {
-    getCatch()
-    getNonCatch()
     getMonitor()
   }, [])
   return (
     <>
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <PieChart title="累積各行政區總數" data={chartData} />
+        <PieChart title="累積各行政區總數" data={pieChartData} />
         <div className="grid grid-cols-2 gap-3">
           <AnalysisCard
             iconName="circles-three-plus"
@@ -116,9 +65,13 @@ const Monitoring = () => {
           </AnalysisCard>
         </div>
       </div>
-      <BarChart className="mb-4" />
-      <LineChart className="mb-4" lineType="administrativeDistrict" />
-      <AnimalMap />
+      <BarChart data={barChartData} className="mb-4" />
+      <LineChart
+        data={lineChartData}
+        className="mb-4"
+        lineType="administrativeDistrict"
+      />
+      <AnimalMap colorType="red" options={monthOptions} />
     </>
   )
 }

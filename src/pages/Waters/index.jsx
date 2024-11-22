@@ -4,37 +4,23 @@ import BarChart from '@/components/BarChart'
 import LineChart from '@/components/LineChart'
 import AnimalMap from '@/components/AnimalMap'
 import AnalysisCard from '@/components/AnalysisCard'
-
+import {
+  getPieChartData,
+  getBarChartDataForIguana,
+  getLineChartData
+} from '@/assets/js/chartData.js'
 import { watersApi } from '@/api/module/waters.js'
+import { monthOptions } from '@/assets/js/constant.js'
 
 const Waters = () => {
-  const [chartData, setChartData] = useState([])
+  const [pieChartData, setPieChartData] = useState([])
+  const [barChartData, setBarChartData] = useState([])
+  const [lineChartData, setLineChartData] = useState([])
   const getWaters = async () => {
     const data = await watersApi.getWaters()
-    const formattedData = {}
-    for (const item of data) {
-      if (formattedData[item.district]) {
-        formattedData[item.district] +=
-          item.maleLarge +
-          item.femaleLarge +
-          item.maleMedium +
-          item.femaleMedium +
-          item.juvenile
-      } else {
-        formattedData[item.district] =
-          item.maleLarge +
-          item.femaleLarge +
-          item.maleMedium +
-          item.femaleMedium +
-          item.juvenile
-      }
-    }
-    setChartData(
-      Object.entries(formattedData).map((item) => ({
-        district: item[0],
-        amount: item[1]
-      }))
-    )
+    setPieChartData(getPieChartData(data))
+    setBarChartData(getBarChartDataForIguana(data))
+    setLineChartData(getLineChartData(data))
   }
   useEffect(() => {
     getWaters()
@@ -42,7 +28,7 @@ const Waters = () => {
   return (
     <>
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <PieChart title="累積各水域總數" data={chartData} />
+        <PieChart title="累積各水域總數" data={pieChartData} />
         <div className="grid grid-cols-2 gap-3">
           <AnalysisCard
             iconName="circles-three-plus"
@@ -78,9 +64,9 @@ const Waters = () => {
           </AnalysisCard>
         </div>
       </div>
-      <BarChart className="mb-4" />
-      <LineChart className="mb-4" lineType="waters" />
-      <AnimalMap />
+      <BarChart data={barChartData} className="mb-4" />
+      <LineChart data={lineChartData} className="mb-4" lineType="waters" />
+      <AnimalMap colorType="red" options={monthOptions} />
     </>
   )
 }

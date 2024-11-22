@@ -18,6 +18,7 @@ const LocationSelect = ({ className, onChange, options }) => {
     <Select
       defaultValue={optionsWithIcon[0].value}
       className={clsx(className, 'w-[148px] location-select')}
+      popupClassName="dark-dropdown"
       onChange={onChange}
       options={optionsWithIcon}
     />

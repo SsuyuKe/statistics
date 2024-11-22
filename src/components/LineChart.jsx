@@ -25,126 +25,107 @@ const yearOptions = [
   { label: 2021, value: 2021 }
 ]
 
-const LineChart = ({ className, lineType }) => {
+const LineChart = ({ data, className, lineType }) => {
   const chartRef = useRef(null)
   const handleSelectYear = (e) => {
     console.log(e)
   }
-
   useEffect(() => {
-    const myChart = echarts.init(chartRef.current)
-
-    const totalData = [
-      28,
-      28,
-      32,
-      40,
-      35,
-      31,
-      33,
-      35,
-      38,
-      44,
-      52,
-      62 // 每月总数数据
-    ]
-
-    const areaStyle = {
-      administrativeDistrict: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: '#4DC39F' }, // 顶部颜色
-          { offset: 0.5, color: '#2B755E' }, // 中间颜色
-          { offset: 1, color: 'rgba(50, 135, 109, 0)' } // 底部透明色
-        ])
-      },
-      waters: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: '#1B3586' }, // 从顶部开始的颜色
-          { offset: 1, color: 'rgba(53, 76, 148, 0)' } // 底部透明色
-        ])
+    if (data.length) {
+      const chartInstance = echarts.init(chartRef.current)
+      const areaStyle = {
+        administrativeDistrict: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#4DC39F' }, // 顶部颜色
+            { offset: 0.5, color: '#2B755E' }, // 中间颜色
+            { offset: 1, color: 'rgba(50, 135, 109, 0)' } // 底部透明色
+          ])
+        },
+        waters: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: '#1B3586' }, // 从顶部开始的颜色
+            { offset: 1, color: 'rgba(53, 76, 148, 0)' } // 底部透明色
+          ])
+        }
+      }
+      const lineColor = {
+        administrativeDistrict: '#42A486',
+        waters: '#6B8DF8'
+      }
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            lineType: 'line'
+          }
+        },
+        grid: {
+          left: '0', // 左边距
+          right: '0', // 右边距
+          top: '40px', // 上边距
+          bottom: '0', // 下边距
+          containLabel: true // 确保标签在图表边缘内
+        },
+        xAxis: {
+          type: 'category',
+          data: months,
+          boundaryGap: false,
+          axisLine: {
+            lineStyle: {
+              color: '#98A1B733'
+            }
+          },
+          axisLabel: {
+            color: '#98A1B7'
+          }
+        },
+        yAxis: {
+          type: 'value',
+          interval: 20,
+          axisLine: {
+            lineStyle: {
+              color: '#98A1B733'
+            }
+          },
+          axisLabel: {
+            color: '#98A1B7'
+          },
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: '#98A1B733' // 设置y轴网格线颜色
+            }
+          }
+        },
+        series: [
+          {
+            name: '蜥蜴总数',
+            type: 'line',
+            data,
+            smooth: true, // 线条平滑
+            lineStyle: {
+              color: lineColor[lineType], // 折线颜色
+              width: 2
+            },
+            symbol: 'none', // 移除端点
+            areaStyle: areaStyle[lineType]
+          }
+        ]
+      }
+      chartInstance.setOption(option)
+      // 监听窗口变化，自动调整图表大小
+      window.addEventListener('resize', () => {
+        chartInstance.resize()
+      })
+      // 清理
+      return () => {
+        window.removeEventListener('resize', () => {
+          chartInstance.resize()
+        })
+        chartInstance.dispose()
       }
     }
-    const lineColor = {
-      administrativeDistrict: '#42A486',
-      waters: '#6B8DF8'
-    }
-
-    const option = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          lineType: 'line'
-        }
-      },
-      grid: {
-        left: '0', // 左边距
-        right: '0', // 右边距
-        top: '40px', // 上边距
-        bottom: '0', // 下边距
-        containLabel: true // 确保标签在图表边缘内
-      },
-      xAxis: {
-        type: 'category',
-        data: months,
-        boundaryGap: false,
-        axisLine: {
-          lineStyle: {
-            color: '#98A1B733'
-          }
-        },
-        axisLabel: {
-          color: '#98A1B7'
-        }
-      },
-      yAxis: {
-        type: 'value',
-        max: 70,
-        axisLine: {
-          lineStyle: {
-            color: '#98A1B733'
-          }
-        },
-        axisLabel: {
-          color: '#98A1B7'
-        },
-        splitLine: {
-          show: true,
-          lineStyle: {
-            color: '#98A1B733' // 设置y轴网格线颜色
-          }
-        }
-      },
-      series: [
-        {
-          name: '蜥蜴总数',
-          type: 'line',
-          data: totalData,
-          smooth: true, // 线条平滑
-          lineStyle: {
-            color: lineColor[lineType], // 折线颜色
-            width: 2
-          },
-          symbol: 'none', // 移除端点
-          areaStyle: areaStyle[lineType]
-        }
-      ]
-    }
-
-    myChart.setOption(option)
-
-    // 监听窗口变化，自动调整图表大小
-    window.addEventListener('resize', () => {
-      myChart.resize()
-    })
-
-    // 清理
-    return () => {
-      window.removeEventListener('resize', () => {
-        myChart.resize()
-      })
-      myChart.dispose()
-    }
-  }, [])
+  }, [data])
 
   return (
     <div
@@ -166,5 +147,6 @@ export default LineChart
 
 LineChart.propTypes = {
   className: PropTypes.string,
+  data: PropTypes.arrayOf(PropTypes.number).isRequired,
   lineType: PropTypes.oneOf(['administrativeDistrict', 'waters']).isRequired
 }
