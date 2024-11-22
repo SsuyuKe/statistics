@@ -9,3 +9,4 @@ export const catchStatusOptions = [
   { value: '捕捉', label: '捕捉' },
   { value: '未捕捉', label: '未捕捉' }
 ]
+export const months = Array.from({ length: 12 }, (_, i) => `${i + 1}月`)

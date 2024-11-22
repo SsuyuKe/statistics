@@ -32,7 +32,6 @@ const PieChart = ({ data, title, className }) => {
 
   useEffect(() => {
     if (locationDataWithColor.length > 0) {
-      // 確保資料存在
       const chartInstance = echarts.init(chartRef.current)
       const option = {
         tooltip: {

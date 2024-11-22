@@ -31,6 +31,6 @@ MapSelect.propTypes = {
     })
   ).isRequired,
   className: PropTypes.string,
-  darkMode: PropTypes.boolean,
+  darkMode: PropTypes.bool,
   onChange: PropTypes.func.isRequired
 }

@@ -23,6 +23,9 @@ const Monitoring = () => {
     setBarChartData(getBarChartDataForIguana(data))
     setLineChartData(getLineChartData(data))
   }
+  const handleMonthSelect = (e) => {
+    console.log(e)
+  }
   useEffect(() => {
     getMonitor()
   }, [])
@@ -71,7 +74,11 @@ const Monitoring = () => {
         className="mb-4"
         lineType="administrativeDistrict"
       />
-      <AnimalMap colorType="red" options={monthOptions} />
+      <AnimalMap
+        colorType="red"
+        options={monthOptions}
+        onMonthChange={handleMonthSelect}
+      />
     </>
   )
 }

@@ -1,4 +1,4 @@
-@import './reset.scss';
+@use './reset' as reset;
 
 @tailwind base;
 @tailwind components;

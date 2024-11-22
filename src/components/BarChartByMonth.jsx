@@ -3,23 +3,9 @@ import * as echarts from 'echarts'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import Select from '@/components/Select'
+import { months } from '@/assets/js/constant.js'
 
-const CATEGORIES = [
-  '1月',
-  '2月',
-  '3月',
-  '4月',
-  '5月',
-  '6月',
-  '7月',
-  '8月',
-  '9月',
-  '10月',
-  '11月',
-  '12月'
-]
 const LEGENDS = ['捕抓', '未捕抓']
-
 const COLORS = ['#43D1A7', '#FF003C']
 const yearOptions = [
   { label: 2024, value: 2024 },
@@ -39,7 +25,7 @@ const BarChartByMonth = ({ data, className, title = '' }) => {
       const series = LEGENDS.map((legend, index) => ({
         name: legend,
         type: 'bar',
-        data: CATEGORIES.map((_, idx) => {
+        data: months.map((_, idx) => {
           return data[idx] && data[idx][index] ? data[idx][index] : 0
         }),
         itemStyle: {
@@ -71,7 +57,7 @@ const BarChartByMonth = ({ data, className, title = '' }) => {
         },
         xAxis: {
           type: 'category',
-          data: CATEGORIES
+          data: months
         },
         yAxis: {
           type: 'value',

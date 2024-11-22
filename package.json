@@ -35,19 +35,16 @@
     "axios": "^1.7.7",
     "clsx": "^2.1.1",
     "concurrently": "^9.1.0",
-    "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "echarts": "^5.5.1",
     "express": "^4.21.1",
     "express-async-handler": "^1.2.0",
     "leaflet": "^1.9.4",
-    "mongoose": "^8.8.1",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
-    "react-router-dom": "^6.27.0",
-    "sass": "^1.80.4"
+    "react-router-dom": "^6.27.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",
@@ -56,6 +53,7 @@
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "@vitejs/plugin-vue": "^5.2.0",
     "autoprefixer": "^10.4.20",
     "commitizen": "^4.3.1",
     "commitlint-config-cz": "^0.13.3",
@@ -71,9 +69,10 @@
     "nodemon": "^3.1.7",
     "postcss": "^8.4.47",
     "prettier": "3.3.3",
+    "sass": "^1.81.0",
     "tailwindcss": "^3.4.14",
     "unplugin-auto-import": "^0.18.3",
-    "vite": "^5.4.9",
+    "vite": "^5.4.11",
     "vite-plugin-svg-icons": "^2.0.1"
   }
 }

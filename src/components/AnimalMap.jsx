@@ -12,9 +12,9 @@ import TimelineWithSlider from '@/components/TimeLine'
 import SvgIcon from '@/components/SvgIcon'
 import clsx from 'clsx'
 
-// 模擬地圖資料，包括中心點和標記
+// mock地圖資料
 const mapData = {
-  center: [25.033, 121.5654], // 中心點座標，例如台北
+  center: [25.033, 121.5654],
   locations: [
     {
       id: 1,
@@ -93,7 +93,7 @@ const createIcon = (image, grade, number, colorType) => {
   })
 }
 
-const AnimalMap = ({ className, colorType, options }) => {
+const AnimalMap = ({ className, colorType, options, onMonthChange }) => {
   const [url, setUrl] = useState(OSMUrl_light)
   const [mode, setMode] = useState(false)
 
@@ -112,6 +112,7 @@ const AnimalMap = ({ className, colorType, options }) => {
       <div className="relative h-[400px] rounded-[10px] overflow-hidden">
         <MapSelect
           className="absolute right-9 top-6 w-[182px] z-[1000]"
+          onChange={onMonthChange}
           options={options}
           darkMode={mode}
         />
@@ -171,7 +172,12 @@ const AnimalMap = ({ className, colorType, options }) => {
                     />
                     總數
                   </p>
-                  <p className={clsx('!m-0', { 'text-white': mode })}>27</p>
+                  <p className={clsx('!m-0', { 'text-white': mode })}>
+                    {categories.reduce(
+                      (prev, category) => prev + category.value,
+                      0
+                    )}
+                  </p>
                 </div>
                 <ul className="pt-2">
                   {categories.map((item) => (
@@ -216,5 +222,6 @@ AnimalMap.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired
     })
-  ).isRequired
+  ).isRequired,
+  onMonthChange: PropTypes.func.isRequired
 }

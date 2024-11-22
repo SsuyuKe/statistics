@@ -3,21 +3,7 @@ import * as echarts from 'echarts'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import Select from '@/components/Select'
-
-const months = [
-  '1月',
-  '2月',
-  '3月',
-  '4月',
-  '5月',
-  '6月',
-  '7月',
-  '8月',
-  '9月',
-  '10月',
-  '11月',
-  '12月'
-]
+import { months } from '@/assets/js/constant.js'
 
 const categories = [
   '公-30cm以上',
@@ -34,6 +20,8 @@ const yearOptions = [
   { label: 2021, value: 2021 }
 ]
 
+const COLORS = ['#1F47E9', '#FF003C', '#3BE8FF', '#FF8AA6', '#A2A2A2']
+
 const BarChart = ({ data, className }) => {
   const chartRef = useRef(null)
   const handleSelectYear = (e) => {
@@ -45,18 +33,9 @@ const BarChart = ({ data, className }) => {
       const series = categories.map((category, index) => ({
         name: category,
         type: 'bar',
-        data: data.map((monthData) => monthData[index]), // 取得每月对应类别的数据
+        data: data.map((monthData) => monthData[index]),
         itemStyle: {
-          color: () => {
-            const colors = [
-              '#1F47E9',
-              '#FF003C',
-              '#3BE8FF',
-              '#FF8AA6',
-              '#A2A2A2'
-            ]
-            return colors[index % colors.length] // 按索引选择颜色
-          },
+          color: () => COLORS[index % COLORS.length],
           borderRadius: [4, 4, 0, 0]
         }
       }))
@@ -99,11 +78,9 @@ const BarChart = ({ data, className }) => {
         series
       }
       chartInstance.setOption(option)
-      // 监听窗口变化，自动调整图表大小
       window.addEventListener('resize', () => {
         chartInstance.resize()
       })
-      // 清理
       return () => {
         window.removeEventListener('resize', () => {
           chartInstance.resize()

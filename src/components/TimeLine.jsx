@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import SvgIcon from '@/components/SvgIcon'
+import { months } from '@/assets/js/constant.js'
 
 const MonthTimeline = ({ className, darkMode }) => {
   const [currentMonth, setCurrentMonth] = useState(0)
   const [startIndex, setStartIndex] = useState(0)
-  const months = Array.from({ length: 12 }, (_, i) => `${i + 1}月`)
   const visibleMonths = months.slice(startIndex, startIndex + 4)
   const handlePrev = () => {
     if (startIndex > 0) {
@@ -18,8 +18,6 @@ const MonthTimeline = ({ className, darkMode }) => {
       setStartIndex(startIndex + 1)
     }
   }
-
-  console.log(darkMode)
   return (
     <div
       className={clsx(
@@ -48,7 +46,6 @@ const MonthTimeline = ({ className, darkMode }) => {
           className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"
         />
       </button>
-      {/* Timeline */}
       <div className="flex-1 mx-6">
         <div className="relative flex">
           <div
@@ -123,5 +120,5 @@ export default MonthTimeline
 
 MonthTimeline.propTypes = {
   className: PropTypes.string,
-  darkMode: PropTypes.boolean
+  darkMode: PropTypes.bool
 }

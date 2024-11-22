@@ -24,10 +24,10 @@ const BarChartByLocation = ({ xAxisData, data, className, title = '' }) => {
       const series = CATEGORIES.map((category, index) => ({
         name: category,
         type: 'bar',
-        data: data.map((monthData) => monthData[index]), // 取得每月对应类别的数据
+        data: data.map((monthData) => monthData[index]),
         itemStyle: {
           color: () => {
-            return COLORS[index % COLORS.length] // 按索引选择颜色
+            return COLORS[index % COLORS.length]
           },
           borderRadius: [4, 4, 0, 0]
         }

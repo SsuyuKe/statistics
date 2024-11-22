@@ -3,21 +3,8 @@ import * as echarts from 'echarts'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import Select from '@/components/Select'
+import { months } from '@/assets/js/constant.js'
 
-const months = [
-  '1月',
-  '2月',
-  '3月',
-  '4月',
-  '5月',
-  '6月',
-  '7月',
-  '8月',
-  '9月',
-  '10月',
-  '11月',
-  '12月'
-]
 const yearOptions = [
   { label: 2024, value: 2024 },
   { label: 2023, value: 2023 },
@@ -36,15 +23,15 @@ const LineChart = ({ data, className, lineType }) => {
       const areaStyle = {
         administrativeDistrict: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#4DC39F' }, // 顶部颜色
-            { offset: 0.5, color: '#2B755E' }, // 中间颜色
-            { offset: 1, color: 'rgba(50, 135, 109, 0)' } // 底部透明色
+            { offset: 0, color: '#4DC39F' },
+            { offset: 0.5, color: '#2B755E' },
+            { offset: 1, color: 'rgba(50, 135, 109, 0)' }
           ])
         },
         waters: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#1B3586' }, // 从顶部开始的颜色
-            { offset: 1, color: 'rgba(53, 76, 148, 0)' } // 底部透明色
+            { offset: 0, color: '#1B3586' },
+            { offset: 1, color: 'rgba(53, 76, 148, 0)' }
           ])
         }
       }
@@ -60,11 +47,11 @@ const LineChart = ({ data, className, lineType }) => {
           }
         },
         grid: {
-          left: '0', // 左边距
-          right: '0', // 右边距
-          top: '40px', // 上边距
-          bottom: '0', // 下边距
-          containLabel: true // 确保标签在图表边缘内
+          left: '0',
+          right: '0',
+          top: '40px',
+          bottom: '0',
+          containLabel: true
         },
         xAxis: {
           type: 'category',
@@ -93,7 +80,7 @@ const LineChart = ({ data, className, lineType }) => {
           splitLine: {
             show: true,
             lineStyle: {
-              color: '#98A1B733' // 设置y轴网格线颜色
+              color: '#98A1B733'
             }
           }
         },
@@ -102,22 +89,20 @@ const LineChart = ({ data, className, lineType }) => {
             name: '蜥蜴总数',
             type: 'line',
             data,
-            smooth: true, // 线条平滑
+            smooth: true,
             lineStyle: {
-              color: lineColor[lineType], // 折线颜色
+              color: lineColor[lineType],
               width: 2
             },
-            symbol: 'none', // 移除端点
+            symbol: 'none',
             areaStyle: areaStyle[lineType]
           }
         ]
       }
       chartInstance.setOption(option)
-      // 监听窗口变化，自动调整图表大小
       window.addEventListener('resize', () => {
         chartInstance.resize()
       })
-      // 清理
       return () => {
         window.removeEventListener('resize', () => {
           chartInstance.resize()

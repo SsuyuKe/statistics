@@ -22,6 +22,9 @@ const Waters = () => {
     setBarChartData(getBarChartDataForIguana(data))
     setLineChartData(getLineChartData(data))
   }
+  const handleMonthSelect = (e) => {
+    console.log(e)
+  }
   useEffect(() => {
     getWaters()
   }, [])
@@ -66,7 +69,11 @@ const Waters = () => {
       </div>
       <BarChart data={barChartData} className="mb-4" />
       <LineChart data={lineChartData} className="mb-4" lineType="waters" />
-      <AnimalMap colorType="red" options={monthOptions} />
+      <AnimalMap
+        colorType="red"
+        options={monthOptions}
+        onMonthChange={handleMonthSelect}
+      />
     </>
   )
 }
