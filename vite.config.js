@@ -10,49 +10,44 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  const isDev = mode === 'development'
-  return {
-    plugins: [
-      react(),
-      AutoImport({
-        include: [
-          /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
-          /\.vue$/,
-          /\.vue\?vue/, // .vue
-          /\.md$/ // .md
-        ],
-        imports: ['react', 'react-router-dom'],
-        dts: true,
-        eslintrc: {
-          enabled: false,
-          filepath: './.eslintrc-auto-import.json',
-          globalsPropValue: true
-        }
-      }),
-      createSvgIconsPlugin({
-        iconDirs: [fileURLToPath(new URL('src/assets/icons', import.meta.url))]
-      })
-    ],
-    css: {
-      postcss: {
-        plugins: [tailwindcss()]
+export default defineConfig({
+  plugins: [
+    react(),
+    AutoImport({
+      include: [
+        /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+        /\.vue$/,
+        /\.vue\?vue/, // .vue
+        /\.md$/ // .md
+      ],
+      imports: ['react', 'react-router-dom'],
+      dts: true,
+      eslintrc: {
+        enabled: false,
+        filepath: './.eslintrc-auto-import.json',
+        globalsPropValue: true
       }
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src')
-      }
-    },
-    server: {
-      proxy: {
-        '/api': {
-          target: isDev
-            ? 'http://localhost:6688'
-            : 'https://statistics-8lp1.onrender.com',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
-        }
+    }),
+    createSvgIconsPlugin({
+      iconDirs: [fileURLToPath(new URL('src/assets/icons', import.meta.url))]
+    })
+  ],
+  css: {
+    postcss: {
+      plugins: [tailwindcss()]
+    }
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:6688',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }

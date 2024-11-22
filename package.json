@@ -6,14 +6,13 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run start\"",
     "start": "vite",
-    "server": "npx nodemon server/index.js",
+    "server": "npx node server/index.js",
     "build": "vite build",
     "lint": "ESLINT_USE_FLAT_CONFIG=true npx eslint --fix './src/**/*.{js,jsx,ts,tsx}'",
     "prettier": "prettier --write ./src",
     "preview": "vite preview",
     "commit": "git add . && git-cz",
-    "prepare": "husky",
-    "seed": "npx node server/seeder.js"
+    "prepare": "husky"
   },
   "config": {
     "cz-customizable": {
@@ -35,6 +34,7 @@
     "axios": "^1.7.7",
     "clsx": "^2.1.1",
     "concurrently": "^9.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "echarts": "^5.5.1",
     "express": "^4.21.1",
