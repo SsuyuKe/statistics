@@ -174,11 +174,6 @@ const AnimalMap = ({
       // 當展開時，延遲觸發resize以確保過渡動畫完成後重新計算地圖大小
       const timer = setTimeout(handleMapResize, 500)
       return () => clearTimeout(timer)
-    } else {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight - window.innerHeight,
-        behavior: 'smooth'
-      })
     }
   }, [isExpanded])
   if (!data.locations?.length && !data.center) {

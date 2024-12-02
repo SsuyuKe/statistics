@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import useScrollRestore from '@/hooks/useScrollRestore'
 import AnimalMap from '@/components/AnimalMap'
 import PieChart from '@/components/PieChart'
 import AnalysisCard from '@/components/AnalysisCard'
@@ -24,6 +25,7 @@ const Reporting = () => {
   const [lineData, setLineData] = useState([])
   const [mapData, setMapData] = useState({})
   const [isExpanded, setIsExpanded] = useState(false)
+  const handleExpandChange = useScrollRestore(isExpanded)
 
   const handleMonthSelect = (e) => {
     console.log(e)
@@ -89,7 +91,10 @@ const Reporting = () => {
         colorType="green"
         data={mapData}
         isExpanded={isExpanded}
-        onIsExpanded={setIsExpanded}
+        onIsExpanded={(expanded) => {
+          handleExpandChange(expanded)
+          setIsExpanded(expanded)
+        }}
         options={catchStatusOptions}
         onMonthChange={handleMonthSelect}
       />

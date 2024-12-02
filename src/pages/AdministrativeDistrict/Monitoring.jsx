@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import useScrollRestore from '@/hooks/useScrollRestore'
 import PieChart from '@/components/PieChart'
 import BarChart from '@/components/BarChart'
 import LineChart from '@/components/LineChart'
@@ -24,6 +25,7 @@ const Monitoring = () => {
   const [lineChartData, setLineChartData] = useState([])
   const [mapData, setMapData] = useState({})
   const [isExpanded, setIsExpanded] = useState(false)
+  const handleExpandChange = useScrollRestore(isExpanded)
 
   const getMonitor = async () => {
     const data = await adApi.getMonitor()
@@ -97,7 +99,10 @@ const Monitoring = () => {
       <AnimalMap
         colorType="red"
         isExpanded={isExpanded}
-        onIsExpanded={setIsExpanded}
+        onIsExpanded={(expanded) => {
+          handleExpandChange(expanded)
+          setIsExpanded(expanded)
+        }}
         data={mapData}
         options={monthOptions}
         onMonthChange={handleMonthSelect}

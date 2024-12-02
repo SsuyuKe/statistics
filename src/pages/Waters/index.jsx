@@ -17,6 +17,7 @@ import {
   yearOptions,
   watersOptions
 } from '@/assets/js/constant.js'
+import useScrollRestore from '@/hooks/useScrollRestore'
 
 const Waters = () => {
   const [pieChartData, setPieChartData] = useState([])
@@ -24,6 +25,7 @@ const Waters = () => {
   const [lineChartData, setLineChartData] = useState([])
   const [mapData, setMapData] = useState({})
   const [isExpanded, setIsExpanded] = useState(false)
+  const handleExpandChange = useScrollRestore(isExpanded)
 
   const getWaters = async () => {
     const data = await watersApi.getWaters()
@@ -94,7 +96,10 @@ const Waters = () => {
       <AnimalMap
         colorType="red"
         isExpanded={isExpanded}
-        onIsExpanded={setIsExpanded}
+        onIsExpanded={(expanded) => {
+          handleExpandChange(expanded)
+          setIsExpanded(expanded)
+        }}
         data={mapData}
         options={monthOptions}
         onMonthChange={handleMonthSelect}
