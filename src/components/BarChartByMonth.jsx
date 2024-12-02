@@ -3,18 +3,12 @@ import * as echarts from 'echarts'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import Select from '@/components/Select'
-import { months } from '@/assets/js/constant.js'
+import { months, yearOptions } from '@/assets/js/constant.js'
 
 const LEGENDS = ['捕抓', '未捕抓']
 const COLORS = ['#43D1A7', '#FF003C']
-const yearOptions = [
-  { label: 2024, value: 2024 },
-  { label: 2023, value: 2023 },
-  { label: 2022, value: 2022 },
-  { label: 2021, value: 2021 }
-]
 
-const BarChartByMonth = ({ data, className, title = '' }) => {
+const BarChartByMonth = ({ data, className, title = '', options }) => {
   const chartRef = useRef(null)
   const handleSelectYear = (e) => {
     console.log(e)
@@ -62,9 +56,8 @@ const BarChartByMonth = ({ data, className, title = '' }) => {
         yAxis: {
           type: 'value',
           axisLabel: {
-            formatter: '{value}' // Y轴显示实际的数值
+            formatter: '{value}'
           },
-          interval: 20,
           splitLine: {
             show: true,
             lineStyle: {
@@ -92,7 +85,7 @@ const BarChartByMonth = ({ data, className, title = '' }) => {
       className={clsx('bg-[#23252A] rounded-[10px] p-5 relative', className)}
     >
       <Select
-        options={yearOptions}
+        options={options || yearOptions}
         onChange={handleSelectYear}
         className="absolute top-[20px] right-[20px] z-50"
       />
@@ -110,5 +103,13 @@ BarChartByMonth.propTypes = {
   data: PropTypes.array.isRequired,
   title: PropTypes.string,
   xAxisData: PropTypes.array,
-  className: PropTypes.string
+  className: PropTypes.string,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired
+    })
+  )
 }

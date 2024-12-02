@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import PieChart from '@/components/PieChart'
 import BarChart from '@/components/BarChart'
+import BarChartByMonth from '@/components/BarChartByMonth'
 import LineChart from '@/components/LineChart'
 import AnimalMap from '@/components/AnimalMap'
 import AnalysisCard from '@/components/AnalysisCard'
 import {
   getPieChartData,
   getBarChartDataForIguana,
-  getLineChartData
+  getLineChartData,
+  getIguanaMapData
 } from '@/assets/js/chartData.js'
 import { watersApi } from '@/api/module/waters.js'
-import { monthOptions } from '@/assets/js/constant.js'
+import {
+  monthOptions,
+  yearOptions,
+  watersOptions
+} from '@/assets/js/constant.js'
 
 const Waters = () => {
   const [pieChartData, setPieChartData] = useState([])
   const [barChartData, setBarChartData] = useState([])
   const [lineChartData, setLineChartData] = useState([])
+  const [mapData, setMapData] = useState({})
   const getWaters = async () => {
     const data = await watersApi.getWaters()
+    setMapData(getIguanaMapData(data))
     setPieChartData(getPieChartData(data))
     setBarChartData(getBarChartDataForIguana(data))
     setLineChartData(getLineChartData(data))
@@ -54,23 +62,36 @@ const Waters = () => {
           <AnalysisCard
             iconName="iguana-white"
             iconBgColor="#1F47E9"
-            title="公30cm以上幼蜥"
+            title="尺長30公分以上"
           >
             <p className="text-7xl font-bold text-[#555555]">0.70</p>
           </AnalysisCard>
           <AnalysisCard
             iconName="iguana-white"
             iconBgColor="#FF003C"
-            title="母30cm以上幼蜥"
+            title="尺長30公分以下"
           >
             <p className="text-7xl font-bold text-[#555555]">0.70</p>
           </AnalysisCard>
         </div>
       </div>
       <BarChart data={barChartData} className="mb-4" />
-      <LineChart data={lineChartData} className="mb-4" lineType="waters" />
+      <BarChartByMonth
+        title="各條河域"
+        data={barChartData}
+        options={watersOptions}
+        className="mb-4"
+      />
+      <LineChart
+        title="總數"
+        data={lineChartData}
+        options={yearOptions}
+        className="mb-4"
+        lineType="waters"
+      />
       <AnimalMap
         colorType="red"
+        data={mapData}
         options={monthOptions}
         onMonthChange={handleMonthSelect}
       />

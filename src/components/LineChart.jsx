@@ -5,14 +5,7 @@ import PropTypes from 'prop-types'
 import Select from '@/components/Select'
 import { months } from '@/assets/js/constant.js'
 
-const yearOptions = [
-  { label: 2024, value: 2024 },
-  { label: 2023, value: 2023 },
-  { label: 2022, value: 2022 },
-  { label: 2021, value: 2021 }
-]
-
-const LineChart = ({ data, className, lineType }) => {
+const LineChart = ({ data, title, className, lineType, options }) => {
   const chartRef = useRef(null)
   const handleSelectYear = (e) => {
     console.log(e)
@@ -86,7 +79,7 @@ const LineChart = ({ data, className, lineType }) => {
         },
         series: [
           {
-            name: '蜥蜴总数',
+            name: '蜥蜴總數',
             type: 'line',
             data,
             smooth: true,
@@ -118,10 +111,10 @@ const LineChart = ({ data, className, lineType }) => {
     >
       <Select
         onChange={handleSelectYear}
-        options={yearOptions}
+        options={options}
         className="absolute top-[20px] right-[20px]"
       />
-      <p className="text-xl text-white font-bold text-center">總數</p>
+      <p className="text-xl text-white font-bold text-center">{title}</p>
       <div className="flex justify-center"></div>
       <div ref={chartRef} style={{ width: '100%', height: '400px' }} />
     </div>
@@ -132,6 +125,15 @@ export default LineChart
 
 LineChart.propTypes = {
   className: PropTypes.string,
+  title: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.number).isRequired,
-  lineType: PropTypes.oneOf(['administrativeDistrict', 'waters']).isRequired
+  lineType: PropTypes.oneOf(['administrativeDistrict', 'waters']).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired
+    })
+  ).isRequired
 }

@@ -1,13 +1,13 @@
 import * as echarts from 'echarts'
 import React, { useRef, useEffect, useState } from 'react'
 import ChartLegend from '@/components/ChartLegend'
-import SvgIcon from '@/components/SvgIcon'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
+import Pagination from '@/components/Pagination'
 
 const ITEMS_PER_PAGE = 9
 
-const PieChart = ({ data, title, className }) => {
+const PieChart = ({ data, title, className, showPercent }) => {
   const chartRef = useRef(null)
   const [currentPage, setCurrentPage] = useState(0)
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE)
@@ -80,41 +80,26 @@ const PieChart = ({ data, title, className }) => {
     <div
       className={clsx(
         'grid grid-cols-2 bg-[#23252A] py-6 px-7 rounded-[10px]',
+        { 'grid-cols-3': !showPercent },
         className
       )}
     >
-      <div className="flex flex-col items-start">
+      <div
+        className={clsx('flex flex-col items-start', {
+          'col-span-1': !showPercent
+        })}
+      >
         <div className="flex">
           <h3 className="mb-[52px] text-white text-xl font-bold mr-5">
             {title}
           </h3>
-          {locationDataWithColor.length > 9 && (
-            <>
-              <button
-                onClick={handlePrev}
-                disabled={currentPage === 0}
-                className="bg-white rounded-full relative w-8 h-8 mr-2"
-              >
-                <SvgIcon
-                  name="arrow-left"
-                  width={10}
-                  height={8}
-                  className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"
-                />
-              </button>
-              <button
-                onClick={handleNext}
-                disabled={currentPage === totalPages - 1}
-                className="bg-white rounded-full relative w-8 h-8"
-              >
-                <SvgIcon
-                  name="arrow-right"
-                  width={10}
-                  height={8}
-                  className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2"
-                />
-              </button>
-            </>
+          {locationDataWithColor.length > ITEMS_PER_PAGE && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPrev={handlePrev}
+              onNext={handleNext}
+            />
           )}
         </div>
         <div className="min-w-[240px] relative">
@@ -125,7 +110,11 @@ const PieChart = ({ data, title, className }) => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-x-10 gap-y-7">
+      <div
+        className={clsx('grid grid-cols-3 gap-x-10 gap-y-7', {
+          'col-span-2 grid-cols-6': !showPercent
+        })}
+      >
         {locationDataWithColor
           .slice(
             currentPage * ITEMS_PER_PAGE,
@@ -138,6 +127,7 @@ const PieChart = ({ data, title, className }) => {
               color={item.color}
               number={item.amount}
               percentage={item.percentage}
+              showPercent={showPercent}
             />
           ))}
       </div>
@@ -147,6 +137,10 @@ const PieChart = ({ data, title, className }) => {
 
 export default PieChart
 
+PieChart.defaultProps = {
+  showPercent: true
+}
+
 PieChart.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
@@ -155,5 +149,6 @@ PieChart.propTypes = {
     })
   ).isRequired,
   title: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  showPercent: PropTypes.bool
 }

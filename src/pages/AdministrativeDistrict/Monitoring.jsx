@@ -8,17 +8,24 @@ import { adApi } from '@/api/module/ad.js'
 import {
   getPieChartData,
   getBarChartDataForIguana,
-  getLineChartData
+  getLineChartData,
+  getIguanaMapData
 } from '@/assets/js/chartData.js'
-import { monthOptions } from '@/assets/js/constant.js'
+import {
+  monthOptions,
+  districtOptions,
+  yearOptions
+} from '@/assets/js/constant.js'
 
 const Monitoring = () => {
   const [pieChartData, setPieChartData] = useState([])
   const [barChartData, setBarChartData] = useState([])
   const [lineChartData, setLineChartData] = useState([])
+  const [mapData, setMapData] = useState({})
 
   const getMonitor = async () => {
     const data = await adApi.getMonitor()
+    setMapData(getIguanaMapData(data))
     setPieChartData(getPieChartData(data))
     setBarChartData(getBarChartDataForIguana(data))
     setLineChartData(getLineChartData(data))
@@ -55,14 +62,14 @@ const Monitoring = () => {
           <AnalysisCard
             iconName="iguana-white"
             iconBgColor="#1F47E9"
-            title="公30cm以上幼蜥"
+            title="尺長30公分以上"
           >
             <p className="text-7xl font-bold text-[#555555]">0.70</p>
           </AnalysisCard>
           <AnalysisCard
             iconName="iguana-white"
             iconBgColor="#FF003C"
-            title="母30cm以上幼蜥"
+            title="尺長30公分以下"
           >
             <p className="text-7xl font-bold text-[#555555]">0.70</p>
           </AnalysisCard>
@@ -70,12 +77,22 @@ const Monitoring = () => {
       </div>
       <BarChart data={barChartData} className="mb-4" />
       <LineChart
+        title="總數"
         data={lineChartData}
+        options={yearOptions}
+        className="mb-4"
+        lineType="administrativeDistrict"
+      />
+      <LineChart
+        title="行政區"
+        data={lineChartData}
+        options={districtOptions}
         className="mb-4"
         lineType="administrativeDistrict"
       />
       <AnimalMap
         colorType="red"
+        data={mapData}
         options={monthOptions}
         onMonthChange={handleMonthSelect}
       />

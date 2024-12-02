@@ -1,74 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import PropTypes from 'prop-types'
 import ToggleButton from '@/components/ToggleButton'
 import MapSelect from '@/components/MapSelect'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import Iguana from '@/assets/images/iguana.png'
 import MapIcon from '@/components/MapIcon'
 import TimelineWithSlider from '@/components/TimeLine'
 import SvgIcon from '@/components/SvgIcon'
 import clsx from 'clsx'
+import { iguanaCategories } from '@/assets/js/constant.js'
 
-// mock地圖資料
-const mapData = {
-  center: [25.033, 121.5654],
-  locations: [
-    {
-      id: 1,
-      coords: [25.033, 121.5337],
-      popup: '台北市中心',
-      iconUrl: Iguana,
-      grade: 1,
-      amount: 3
-    },
-    {
-      id: 2,
-      coords: [25.0375, 121.5555],
-      popup: '台北 101',
-      iconUrl: Iguana,
-      grade: 2,
-      amount: 56
-    },
-    {
-      id: 3,
-      coords: [25.0375, 121.5784],
-      popup: '微風廣場',
-      iconUrl: Iguana,
-      grade: 3,
-      amount: 100
-    }
-  ]
-}
-const categories = [
-  {
-    label: '公-30cm以上',
-    value: 30,
-    icon: 'iguana'
-  },
-  {
-    label: '公-30cm以上',
-    value: 30,
-    icon: 'iguana-purple'
-  },
-  {
-    label: '母-30cm以上',
-    value: 30,
-    icon: 'iguana-orange'
-  },
-  {
-    label: '母-19-29cm',
-    value: 30,
-    icon: 'iguana-red'
-  },
-  {
-    label: '幼蜥',
-    value: 30,
-    icon: 'iguana-blue'
-  }
-]
 const OSMUrl_light = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 const CartoDBUrl_dark =
   'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
@@ -79,27 +22,140 @@ const toggleMapModeOptions = [
   { label: '亮模式', value: 'lightMode' },
   { label: '暗模式', value: 'darkMode' }
 ]
+const calculateGrade = (amount) => {
+  const grade = Math.ceil(amount / 10)
+  return grade > 10 ? 10 : grade
+}
 
-const createIcon = (image, grade, number, colorType) => {
+const createIcon = (image, grade, colorType) => {
   return L.divIcon({
     html: ReactDOMServer.renderToString(
-      <MapIcon
-        image={image}
-        grade={grade}
-        number={number}
-        colorType={colorType}
-      />
+      <MapIcon image={image} grade={grade} colorType={colorType} />
     )
   })
 }
+// 計算兩個地點的距離（經緯度計算）
+const calculateDistance = (coords1, coords2) => {
+  const [lat1, lng1] = coords1
+  const [lat2, lng2] = coords2
+  const R = 6371 // 地球半徑，單位：公里
+  const dLat = ((lat2 - lat1) * Math.PI) / 180
+  const dLng = ((lng2 - lng1) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
+// 合併地點
+const mergeLocations = (locations, zoomLevel) => {
+  const threshold =
+    zoomLevel < 5 // 合併距離閾值 threshold(km)
+      ? 50
+      : zoomLevel < 7
+        ? 20
+        : zoomLevel < 9
+          ? 10
+          : zoomLevel < 11
+            ? 5
+            : zoomLevel < 13
+              ? 2
+              : zoomLevel < 15
+                ? 1
+                : 0.5
+  console.log(`當前縮放級別: ${zoomLevel}, 閾值: ${threshold}`)
+  const merged = []
+  const visited = new Set()
 
-const AnimalMap = ({ className, colorType, options, onMonthChange }) => {
+  locations.forEach((loc, i) => {
+    if (visited.has(i)) return
+    let combined = { ...loc }
+    visited.add(i)
+
+    locations.forEach((otherLoc, j) => {
+      if (i !== j && !visited.has(j)) {
+        const distance = calculateDistance(loc.coords, otherLoc.coords)
+        if (distance <= threshold) {
+          combined = {
+            ...combined,
+            coords: [
+              (combined.coords[0] + otherLoc.coords[0]) / 2,
+              (combined.coords[1] + otherLoc.coords[1]) / 2
+            ], // 更新合併後的中心座標
+            totalAmount: combined.totalAmount + otherLoc.totalAmount,
+            maleLarge: combined.maleLarge + otherLoc.maleLarge,
+            femaleLarge: combined.femaleLarge + otherLoc.femaleLarge,
+            maleMedium: combined.maleMedium + otherLoc.maleMedium,
+            femaleMedium: combined.femaleMedium + otherLoc.femaleMedium,
+            juvenile: combined.juvenile + otherLoc.juvenile,
+            location: `${combined.location}, ${otherLoc.location}` // 合併標題
+          }
+          visited.add(j)
+        }
+      }
+    })
+    combined.id = `merged-${i}`
+    merged.push(combined)
+  })
+
+  return merged
+}
+
+// 使用 react-leaflet 的 useMap Hook 監聽地圖事件
+const MapEventHandler = ({ locations, onLocationsUpdate }) => {
+  const map = useMap()
+  useEffect(() => {
+    let debounceTimer
+    const handleZoomEnd = () => {
+      clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => {
+        const zoomLevel = map.getZoom()
+        const mergedData = mergeLocations(locations, zoomLevel)
+        onLocationsUpdate(mergedData)
+      }, 300) // Add debounce delay
+    }
+    map.on('zoomend', handleZoomEnd)
+    const initialMergedData = mergeLocations(locations, map.getZoom())
+    onLocationsUpdate(initialMergedData)
+    return () => {
+      map.off('zoomend', handleZoomEnd)
+      clearTimeout(debounceTimer)
+    }
+  }, [])
+  return null
+}
+MapEventHandler.propTypes = {
+  locations: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      coords: PropTypes.arrayOf(PropTypes.number).isRequired,
+      location: PropTypes.string.isRequired,
+      iconUrl: PropTypes.string.isRequired,
+      totalAmount: PropTypes.number.isRequired,
+      maleLarge: PropTypes.number.isRequired,
+      femaleLarge: PropTypes.number.isRequired,
+      maleMedium: PropTypes.number.isRequired,
+      femaleMedium: PropTypes.number.isRequired,
+      juvenile: PropTypes.number.isRequired
+    })
+  ).isRequired,
+  onLocationsUpdate: PropTypes.func.isRequired
+}
+
+const AnimalMap = ({ className, colorType, options, onMonthChange, data }) => {
   const [url, setUrl] = useState(OSMUrl_light)
   const [mode, setMode] = useState(false)
+  const [mergedLocations, setMergedLocations] = useState(data.locations)
 
   const handleToggleMapModeChange = (e) => {
     setUrl(e.target.value === 'darkMode' ? CartoDBUrl_dark : OSMUrl_light)
     setMode(e.target.value === 'darkMode')
+  }
+  if (!data.locations?.length && !data.center) {
+    return null
   }
   return (
     <div className={clsx({ 'popup-dark': mode }, className)}>
@@ -121,19 +177,22 @@ const AnimalMap = ({ className, colorType, options, onMonthChange }) => {
           darkMode={mode}
         />
         <MapContainer
-          center={mapData.center}
+          center={data.center}
           zoom={13}
           style={{ height: '400px', width: '100%' }}
         >
           <TileLayer url={url} attribution={OSMAttribute} />
-          {mapData.locations.map((location) => (
+          <MapEventHandler
+            locations={data.locations}
+            onLocationsUpdate={setMergedLocations}
+          />
+          {mergedLocations?.map((location) => (
             <Marker
               key={location.id}
               position={location.coords}
               icon={createIcon(
                 location.iconUrl,
-                location.grade,
-                location.amount,
+                calculateGrade(location.totalAmount),
                 colorType
               )}
             >
@@ -150,7 +209,7 @@ const AnimalMap = ({ className, colorType, options, onMonthChange }) => {
                     width={12}
                     color="#FC6767"
                   />
-                  輔英科技大學
+                  {location.location}
                 </h3>
                 <div
                   className={clsx(
@@ -173,14 +232,11 @@ const AnimalMap = ({ className, colorType, options, onMonthChange }) => {
                     總數
                   </p>
                   <p className={clsx('!m-0', { 'text-white': mode })}>
-                    {categories.reduce(
-                      (prev, category) => prev + category.value,
-                      0
-                    )}
+                    {location.totalAmount}
                   </p>
                 </div>
                 <ul className="pt-2">
-                  {categories.map((item) => (
+                  {iguanaCategories.map((item) => (
                     <li
                       key={item.label}
                       className={clsx('flex justify-between mb-2 last:mb-0', {
@@ -197,7 +253,7 @@ const AnimalMap = ({ className, colorType, options, onMonthChange }) => {
                         />
                         <span>{item.label}</span>
                       </div>
-                      <span>{item.value}</span>
+                      <span>{location[item.category]}</span>
                     </li>
                   ))}
                 </ul>
@@ -223,5 +279,22 @@ AnimalMap.propTypes = {
         .isRequired
     })
   ).isRequired,
-  onMonthChange: PropTypes.func.isRequired
+  onMonthChange: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    center: PropTypes.arrayOf(PropTypes.number).isRequired, // 中心地點 [lat, lng]
+    locations: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        coords: PropTypes.arrayOf(PropTypes.number).isRequired, // 經緯度 [lat, lng]
+        location: PropTypes.string.isRequired,
+        iconUrl: PropTypes.string.isRequired,
+        totalAmount: PropTypes.number.isRequired,
+        maleLarge: PropTypes.number.isRequired,
+        femaleLarge: PropTypes.number.isRequired,
+        maleMedium: PropTypes.number.isRequired,
+        femaleMedium: PropTypes.number.isRequired,
+        juvenile: PropTypes.number.isRequired
+      })
+    ).isRequired // 地點的陣列
+  }).isRequired // mapData 整體
 }

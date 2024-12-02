@@ -1,8 +1,9 @@
 import React from 'react'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
+import Iguana from '@/assets/images/iguana.png'
 
-const renderRings = (grade, colorType) => {
+const renderRings = (ringAmount, colorType) => {
   const colors = {
     red: [
       'rgba(255, 108, 108, 1)',
@@ -17,8 +18,8 @@ const renderRings = (grade, colorType) => {
   }
   const baseSize = 60
   const ringThickness = 8
-  // 设置每一环的颜色
-  return Array.from({ length: grade }).map((_, index) => {
+  // 設置每一環的顏色
+  return Array.from({ length: ringAmount }).map((_, index) => {
     const size = baseSize + (index + 1) * ringThickness * 2
     const offset = (size - baseSize) / 2
     return (
@@ -31,14 +32,17 @@ const renderRings = (grade, colorType) => {
           width: `${size}px`,
           height: `${size}px`,
           borderRadius: '50%',
-          backgroundColor: colors[colorType][grade - 1]
+          backgroundColor: colors[colorType][ringAmount - 1]
         }}
       />
     )
   })
 }
 
-const MapIcon = ({ image, className, grade, number, colorType }) => {
+const MapIcon = ({ image, className, grade, colorType }) => {
+  const ringAmount = grade >= 8 ? 3 : grade >= 5 ? 2 : 1
+  // TODO: 暫時先這樣寫！
+  const icon = image === 'Iguana' ? Iguana : ''
   return (
     <div
       className={clsx(
@@ -46,12 +50,12 @@ const MapIcon = ({ image, className, grade, number, colorType }) => {
         className
       )}
     >
-      {renderRings(grade, colorType)}
+      {renderRings(ringAmount, colorType)}
       <div className="relative">
-        <img src={image} alt="image" className="w-full h-full object-contain" />
+        <img src={icon} alt="image" className="w-full h-full object-contain" />
         <div className="absolute right-0 -top-1 w-6 h-6 border border-solid border-[rgba(177,177,177,1)] rounded-full bg-white text-center">
           <span className="text-[rgba(255,67,67,1)] font-bold leading-6">
-            {number > 99 ? '99+' : number}
+            {grade}
           </span>
         </div>
       </div>
@@ -65,6 +69,5 @@ MapIcon.propTypes = {
   className: PropTypes.string,
   image: PropTypes.string,
   grade: PropTypes.number,
-  number: PropTypes.number,
   colorType: PropTypes.string
 }

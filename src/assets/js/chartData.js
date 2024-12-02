@@ -124,3 +124,30 @@ export const getLineChartData = (data) => {
 
   return Array.from({ length: 12 }, (_, i) => monthMap.get(i + 1)?.total || 0)
 }
+
+export const getIguanaMapData = (data) => {
+  const centerLat = data.reduce((sum, item) => sum + item.lat, 0) / data.length
+  const centerLng = data.reduce((sum, item) => sum + item.lng, 0) / data.length
+
+  // 轉換為 mapData 格式
+  return {
+    center: [centerLat, centerLng],
+    locations: data.map((item, index) => ({
+      id: index + 1,
+      coords: [item.lat, item.lng],
+      location: item.location,
+      iconUrl: 'Iguana',
+      totalAmount:
+        item.maleLarge +
+        item.femaleLarge +
+        item.maleMedium +
+        item.femaleMedium +
+        item.juvenile,
+      maleLarge: item.maleLarge,
+      femaleLarge: item.femaleLarge,
+      maleMedium: item.maleMedium,
+      femaleMedium: item.femaleMedium,
+      juvenile: item.juvenile
+    }))
+  }
+}
