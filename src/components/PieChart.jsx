@@ -7,7 +7,7 @@ import Pagination from '@/components/Pagination'
 
 const ITEMS_PER_PAGE = 9
 
-const PieChart = ({ data, title, className, showPercent }) => {
+const PieChart = ({ data, title, className, showPercent = true }) => {
   const chartRef = useRef(null)
   const [currentPage, setCurrentPage] = useState(0)
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE)
@@ -136,10 +136,6 @@ const PieChart = ({ data, title, className, showPercent }) => {
 }
 
 export default PieChart
-
-PieChart.defaultProps = {
-  showPercent: true
-}
 
 PieChart.propTypes = {
   data: PropTypes.arrayOf(

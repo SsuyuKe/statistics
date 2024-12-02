@@ -23,6 +23,7 @@ const Reporting = () => {
   })
   const [lineData, setLineData] = useState([])
   const [mapData, setMapData] = useState({})
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const handleMonthSelect = (e) => {
     console.log(e)
@@ -87,6 +88,8 @@ const Reporting = () => {
       <AnimalMap
         colorType="green"
         data={mapData}
+        isExpanded={isExpanded}
+        onIsExpanded={setIsExpanded}
         options={catchStatusOptions}
         onMonthChange={handleMonthSelect}
       />

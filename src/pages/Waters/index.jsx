@@ -23,6 +23,8 @@ const Waters = () => {
   const [barChartData, setBarChartData] = useState([])
   const [lineChartData, setLineChartData] = useState([])
   const [mapData, setMapData] = useState({})
+  const [isExpanded, setIsExpanded] = useState(false)
+
   const getWaters = async () => {
     const data = await watersApi.getWaters()
     setMapData(getIguanaMapData(data))
@@ -91,6 +93,8 @@ const Waters = () => {
       />
       <AnimalMap
         colorType="red"
+        isExpanded={isExpanded}
+        onIsExpanded={setIsExpanded}
         data={mapData}
         options={monthOptions}
         onMonthChange={handleMonthSelect}

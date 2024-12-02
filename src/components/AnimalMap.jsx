@@ -11,6 +11,8 @@ import TimelineWithSlider from '@/components/TimeLine'
 import SvgIcon from '@/components/SvgIcon'
 import clsx from 'clsx'
 import { iguanaCategories } from '@/assets/js/constant.js'
+import ExpandButton from '@/components/button/ExpandButton'
+import CloseButton from '@/components/button/CloseButton'
 
 const OSMUrl_light = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 const CartoDBUrl_dark =
@@ -51,6 +53,7 @@ const calculateDistance = (coords1, coords2) => {
   return R * c
 }
 // 合併地點
+// 當前縮放級別 zoomLevel
 const mergeLocations = (locations, zoomLevel) => {
   const threshold =
     zoomLevel < 5 // 合併距離閾值 threshold(km)
@@ -66,7 +69,6 @@ const mergeLocations = (locations, zoomLevel) => {
               : zoomLevel < 15
                 ? 1
                 : 0.5
-  console.log(`當前縮放級別: ${zoomLevel}, 閾值: ${threshold}`)
   const merged = []
   const visited = new Set()
 
@@ -145,7 +147,15 @@ MapEventHandler.propTypes = {
   onLocationsUpdate: PropTypes.func.isRequired
 }
 
-const AnimalMap = ({ className, colorType, options, onMonthChange, data }) => {
+const AnimalMap = ({
+  className,
+  colorType,
+  options,
+  onMonthChange,
+  data,
+  isExpanded,
+  onIsExpanded
+}) => {
   const [url, setUrl] = useState(OSMUrl_light)
   const [mode, setMode] = useState(false)
   const [mergedLocations, setMergedLocations] = useState(data.locations)
@@ -154,113 +164,146 @@ const AnimalMap = ({ className, colorType, options, onMonthChange, data }) => {
     setUrl(e.target.value === 'darkMode' ? CartoDBUrl_dark : OSMUrl_light)
     setMode(e.target.value === 'darkMode')
   }
+  const handleMapResize = () => {
+    // 觸發地圖重新計算大小
+    window.dispatchEvent(new Event('resize'))
+  }
+
+  useEffect(() => {
+    if (isExpanded) {
+      // 當展開時，延遲觸發resize以確保過渡動畫完成後重新計算地圖大小
+      const timer = setTimeout(handleMapResize, 500)
+      return () => clearTimeout(timer)
+    } else {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight - window.innerHeight,
+        behavior: 'smooth'
+      })
+    }
+  }, [isExpanded])
   if (!data.locations?.length && !data.center) {
     return null
   }
   return (
-    <div className={clsx({ 'popup-dark': mode }, className)}>
-      <div className="mb-4 flex justify-end">
-        <ToggleButton
-          options={toggleMapModeOptions}
-          onChange={handleToggleMapModeChange}
-        />
-      </div>
-      <div className="relative h-[400px] rounded-[10px] overflow-hidden">
-        <MapSelect
-          className="absolute right-9 top-6 w-[182px] z-[1000]"
-          onChange={onMonthChange}
-          options={options}
-          darkMode={mode}
-        />
-        <TimelineWithSlider
-          className="absolute left-4 bottom-7 z-[1000]"
-          darkMode={mode}
-        />
-        <MapContainer
-          center={data.center}
-          zoom={13}
-          style={{ height: '400px', width: '100%' }}
-        >
-          <TileLayer url={url} attribution={OSMAttribute} />
-          <MapEventHandler
-            locations={data.locations}
-            onLocationsUpdate={setMergedLocations}
+    <div
+      className={clsx(
+        isExpanded
+          ? 'fixed inset-6 h-[calc(100%-48px)] w-[calc(100%-48px)]'
+          : 'relative h-[400px] w-full'
+      )}
+    >
+      <div className={clsx('h-full', { 'popup-dark': mode }, className)}>
+        <div className={clsx('flex justify-end mb-4', { hidden: isExpanded })}>
+          <ToggleButton
+            options={toggleMapModeOptions}
+            onChange={handleToggleMapModeChange}
           />
-          {mergedLocations?.map((location) => (
-            <Marker
-              key={location.id}
-              position={location.coords}
-              icon={createIcon(
-                location.iconUrl,
-                calculateGrade(location.totalAmount),
-                colorType
-              )}
-            >
-              <Popup>
-                <h3
-                  className={clsx(
-                    'text-[#FC6767] flex items-center border-b border-solid pb-2 font-bold',
-                    `${mode ? 'border-[#7C7C7C]' : 'border-[#E0E0E0]'}`
-                  )}
-                >
-                  <SvgIcon
-                    className="mr-2"
-                    name="location-red"
-                    width={12}
-                    color="#FC6767"
-                  />
-                  {location.location}
-                </h3>
-                <div
-                  className={clsx(
-                    'border-b border-solid py-2 flex justify-between',
-                    `${mode ? 'border-[#7C7C7C]' : 'border-[#E0E0E0]'}`
-                  )}
-                >
-                  <p
-                    className={clsx('flex !m-0 font-bold', {
-                      'text-white': mode
-                    })}
+        </div>
+        <div
+          className={clsx('relative h-[400px] rounded-[10px] overflow-hidden', {
+            'h-full': isExpanded
+          })}
+        >
+          {!isExpanded && <ExpandButton onClick={() => onIsExpanded(true)} />}
+          <div className="absolute right-9 top-6 z-[1000] flex">
+            <MapSelect
+              className={clsx({ 'mr-[66px]': isExpanded }, 'w-[182px]')}
+              onChange={onMonthChange}
+              options={options}
+              darkMode={mode}
+            />
+            {isExpanded && <CloseButton onClick={() => onIsExpanded(false)} />}
+          </div>
+          <TimelineWithSlider
+            className="absolute left-4 bottom-7 z-[1000]"
+            darkMode={mode}
+          />
+          <MapContainer
+            center={data.center}
+            zoom={13}
+            style={{ height: '100%', width: '100%' }}
+          >
+            <TileLayer url={url} attribution={OSMAttribute} />
+            <MapEventHandler
+              locations={data.locations}
+              onLocationsUpdate={setMergedLocations}
+            />
+            {mergedLocations?.map((location) => (
+              <Marker
+                key={location.id}
+                position={location.coords}
+                icon={createIcon(
+                  location.iconUrl,
+                  calculateGrade(location.totalAmount),
+                  colorType
+                )}
+              >
+                <Popup>
+                  <h3
+                    className={clsx(
+                      'text-[#FC6767] flex items-center border-b border-solid pb-2 font-bold',
+                      `${mode ? 'border-[#7C7C7C]' : 'border-[#E0E0E0]'}`
+                    )}
                   >
                     <SvgIcon
-                      width={14}
-                      height={14}
                       className="mr-2"
-                      name={`${mode ? 'circles-three-plus' : 'circles-three-plus-dark'}`}
-                      color="#1C1C1C"
+                      name="location-red"
+                      width={12}
+                      color="#FC6767"
                     />
-                    總數
-                  </p>
-                  <p className={clsx('!m-0', { 'text-white': mode })}>
-                    {location.totalAmount}
-                  </p>
-                </div>
-                <ul className="pt-2">
-                  {iguanaCategories.map((item) => (
-                    <li
-                      key={item.label}
-                      className={clsx('flex justify-between mb-2 last:mb-0', {
+                    {location.location}
+                  </h3>
+                  <div
+                    className={clsx(
+                      'border-b border-solid py-2 flex justify-between',
+                      `${mode ? 'border-[#7C7C7C]' : 'border-[#E0E0E0]'}`
+                    )}
+                  >
+                    <p
+                      className={clsx('flex !m-0 font-bold', {
                         'text-white': mode
                       })}
                     >
-                      <div className="flex font-bold">
-                        <SvgIcon
-                          width={14}
-                          height={14}
-                          className="mr-2"
-                          name={item.icon}
-                          color="#1C1C1C"
-                        />
-                        <span>{item.label}</span>
-                      </div>
-                      <span>{location[item.category]}</span>
-                    </li>
-                  ))}
-                </ul>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+                      <SvgIcon
+                        width={14}
+                        height={14}
+                        className="mr-2"
+                        name={`${mode ? 'circles-three-plus' : 'circles-three-plus-dark'}`}
+                        color="#1C1C1C"
+                      />
+                      總數
+                    </p>
+                    <p className={clsx('!m-0', { 'text-white': mode })}>
+                      {location.totalAmount}
+                    </p>
+                  </div>
+                  <ul className="pt-2">
+                    {iguanaCategories.map((item) => (
+                      <li
+                        key={item.label}
+                        className={clsx('flex justify-between mb-2 last:mb-0', {
+                          'text-white': mode
+                        })}
+                      >
+                        <div className="flex font-bold">
+                          <SvgIcon
+                            width={14}
+                            height={14}
+                            className="mr-2"
+                            name={item.icon}
+                            color="#1C1C1C"
+                          />
+                          <span>{item.label}</span>
+                        </div>
+                        <span>{location[item.category]}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
       </div>
     </div>
   )
@@ -271,6 +314,8 @@ export default AnimalMap
 AnimalMap.propTypes = {
   className: PropTypes.string,
   colorType: PropTypes.string,
+  isExpanded: PropTypes.bool,
+  onIsExpanded: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -281,7 +326,7 @@ AnimalMap.propTypes = {
   ).isRequired,
   onMonthChange: PropTypes.func.isRequired,
   data: PropTypes.shape({
-    center: PropTypes.arrayOf(PropTypes.number).isRequired, // 中心地點 [lat, lng]
+    center: PropTypes.arrayOf(PropTypes.number), // 中心地點 [lat, lng]
     locations: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number.isRequired,
@@ -295,6 +340,6 @@ AnimalMap.propTypes = {
         femaleMedium: PropTypes.number.isRequired,
         juvenile: PropTypes.number.isRequired
       })
-    ).isRequired // 地點的陣列
+    ) // 地點的陣列
   }).isRequired // mapData 整體
 }

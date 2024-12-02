@@ -10,7 +10,7 @@ const ChartLegend = ({
   name,
   number,
   percentage,
-  showPercent
+  showPercent = true
 }) => {
   return (
     <div className={clsx('flex flex-col items-center', className)}>
@@ -42,10 +42,6 @@ const ChartLegend = ({
 }
 
 export default ChartLegend
-
-ChartLegend.defaultProps = {
-  showPercent: true
-}
 
 ChartLegend.propTypes = {
   className: PropTypes.string,
