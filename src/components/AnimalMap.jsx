@@ -24,15 +24,11 @@ const toggleMapModeOptions = [
   { label: '亮模式', value: 'lightMode' },
   { label: '暗模式', value: 'darkMode' }
 ]
-const calculateGrade = (amount) => {
-  const grade = Math.ceil(amount / 10)
-  return grade > 10 ? 10 : grade
-}
 
-const createIcon = (image, grade, colorType) => {
+const createIcon = (image, amount, color, type) => {
   return L.divIcon({
     html: ReactDOMServer.renderToString(
-      <MapIcon image={image} grade={grade} colorType={colorType} />
+      <MapIcon image={image} amount={amount} color={color} type={type} />
     )
   })
 }
@@ -105,7 +101,6 @@ const mergeLocations = (locations, zoomLevel) => {
 
   return merged
 }
-
 // 使用 react-leaflet 的 useMap Hook 監聽地圖事件
 const MapEventHandler = ({ locations, onLocationsUpdate }) => {
   const map = useMap()
@@ -149,7 +144,8 @@ MapEventHandler.propTypes = {
 
 const AnimalMap = ({
   className,
-  colorType,
+  color = 'red',
+  type = 'grade',
   options,
   onMonthChange,
   data,
@@ -183,7 +179,7 @@ const AnimalMap = ({
     <div
       className={clsx(
         isExpanded
-          ? 'fixed inset-6 h-[calc(100%-48px)] w-[calc(100%-48px)]'
+          ? 'fixed inset-6 h-[calc(100%-48px)] w-[calc(100%-48px)] z-[1000]'
           : 'relative h-[400px] w-full'
       )}
     >
@@ -229,8 +225,9 @@ const AnimalMap = ({
                 position={location.coords}
                 icon={createIcon(
                   location.iconUrl,
-                  calculateGrade(location.totalAmount),
-                  colorType
+                  location.totalAmount,
+                  color,
+                  type
                 )}
               >
                 <Popup>
@@ -308,7 +305,8 @@ export default AnimalMap
 
 AnimalMap.propTypes = {
   className: PropTypes.string,
-  colorType: PropTypes.string,
+  color: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   isExpanded: PropTypes.bool,
   onIsExpanded: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(

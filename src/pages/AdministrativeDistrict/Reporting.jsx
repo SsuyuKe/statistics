@@ -88,7 +88,8 @@ const Reporting = () => {
         className="mb-4"
       />
       <AnimalMap
-        colorType="green"
+        color="green"
+        type="amount"
         data={mapData}
         isExpanded={isExpanded}
         onIsExpanded={(expanded) => {

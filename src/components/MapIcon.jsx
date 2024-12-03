@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import Iguana from '@/assets/images/iguana.png'
 
-const renderRings = (ringAmount, colorType) => {
+// color => red | green
+const renderRings = (ringAmount, color) => {
   const colors = {
     red: [
       'rgba(255, 108, 108, 1)',
@@ -32,17 +33,34 @@ const renderRings = (ringAmount, colorType) => {
           width: `${size}px`,
           height: `${size}px`,
           borderRadius: '50%',
-          backgroundColor: colors[colorType][ringAmount - 1]
+          backgroundColor: colors[color][ringAmount - 1]
         }}
       />
     )
   })
 }
+const calculateGrade = (amount) => {
+  const grade = Math.ceil(amount / 10)
+  return grade > 10 ? 10 : grade
+}
 
-const MapIcon = ({ image, className, grade, colorType }) => {
-  const ringAmount = grade >= 8 ? 3 : grade >= 5 ? 2 : 1
-  // TODO: 暫時先這樣寫！
+const MapIcon = ({
+  image,
+  className,
+  amount,
+  color = 'red',
+  type = 'grade'
+}) => {
+  // TODO: icon暫時先這樣寫！
   const icon = image === 'Iguana' ? Iguana : ''
+  const [ringAmount, setRingAmount] = useState(1)
+  const types = {
+    grade: calculateGrade(amount),
+    amount: amount > 99 ? '99+' : amount
+  }
+  useEffect(() => {
+    setRingAmount(types[type])
+  }, [])
   return (
     <div
       className={clsx(
@@ -50,12 +68,12 @@ const MapIcon = ({ image, className, grade, colorType }) => {
         className
       )}
     >
-      {renderRings(ringAmount, colorType)}
+      {renderRings(ringAmount, color)}
       <div className="relative">
         <img src={icon} alt="image" className="w-full h-full object-contain" />
         <div className="absolute right-0 -top-1 w-6 h-6 border border-solid border-[rgba(177,177,177,1)] rounded-full bg-white text-center">
           <span className="text-[rgba(255,67,67,1)] font-bold leading-6">
-            {grade}
+            {types[type]}
           </span>
         </div>
       </div>
@@ -68,6 +86,8 @@ export default MapIcon
 MapIcon.propTypes = {
   className: PropTypes.string,
   image: PropTypes.string,
+  type: PropTypes.string,
   grade: PropTypes.number,
-  colorType: PropTypes.string
+  amount: PropTypes.number,
+  color: PropTypes.string
 }

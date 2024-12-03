@@ -97,7 +97,7 @@ const Monitoring = () => {
         />
       </div>
       <AnimalMap
-        colorType="red"
+        color="red"
         isExpanded={isExpanded}
         onIsExpanded={(expanded) => {
           handleExpandChange(expanded)
