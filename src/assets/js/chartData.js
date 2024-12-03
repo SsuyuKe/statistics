@@ -136,7 +136,7 @@ export const getIguanaMapData = (data) => {
       id: index + 1,
       coords: [item.lat, item.lng],
       location: item.location,
-      iconUrl: 'Iguana',
+      iconUrl: index % 2 ? 'Iguana' : 'Catch',
       totalAmount:
         item.maleLarge +
         item.femaleLarge +

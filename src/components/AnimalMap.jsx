@@ -155,7 +155,8 @@ const AnimalMap = ({
   const [url, setUrl] = useState(OSMUrl_light)
   const [mode, setMode] = useState(false)
   const [mergedLocations, setMergedLocations] = useState(data.locations)
-
+  //TODO:之後刪掉
+  console.log(color)
   const handleToggleMapModeChange = (e) => {
     setUrl(e.target.value === 'darkMode' ? CartoDBUrl_dark : OSMUrl_light)
     setMode(e.target.value === 'darkMode')
@@ -226,7 +227,8 @@ const AnimalMap = ({
                 icon={createIcon(
                   location.iconUrl,
                   location.totalAmount,
-                  color,
+                  // TODO: 之後改color
+                  location.iconUrl === 'Iguana' ? 'red' : 'green',
                   type
                 )}
               >
@@ -306,7 +308,7 @@ export default AnimalMap
 AnimalMap.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   isExpanded: PropTypes.bool,
   onIsExpanded: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(

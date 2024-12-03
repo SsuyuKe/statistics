@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import Iguana from '@/assets/images/iguana.png'
+import Catch from '@/assets/images/catch.png'
 
 // color => red | green
 const renderRings = (ringAmount, color) => {
@@ -52,15 +53,19 @@ const MapIcon = ({
   type = 'grade'
 }) => {
   // TODO: icon暫時先這樣寫！
-  const icon = image === 'Iguana' ? Iguana : ''
-  const [ringAmount, setRingAmount] = useState(1)
+  const icon = image === 'Iguana' ? Iguana : Catch
   const types = {
-    grade: calculateGrade(amount),
-    amount: amount > 99 ? '99+' : amount
+    grade: {
+      level: calculateGrade(amount),
+      ringAmount:
+        calculateGrade(amount) >= 8 ? 3 : calculateGrade(amount) >= 5 ? 2 : 1
+    },
+    amount: {
+      level: amount > 99 ? '99+' : amount,
+      ringAmount: amount >= 80 ? 3 : amount >= 50 ? 2 : 1
+    }
   }
-  useEffect(() => {
-    setRingAmount(types[type])
-  }, [])
+  console.log(types[type])
   return (
     <div
       className={clsx(
@@ -68,12 +73,12 @@ const MapIcon = ({
         className
       )}
     >
-      {renderRings(ringAmount, color)}
+      {renderRings(types[type].ringAmount, color)}
       <div className="relative">
         <img src={icon} alt="image" className="w-full h-full object-contain" />
         <div className="absolute right-0 -top-1 w-6 h-6 border border-solid border-[rgba(177,177,177,1)] rounded-full bg-white text-center">
           <span className="text-[rgba(255,67,67,1)] font-bold leading-6">
-            {types[type]}
+            {types[type].level}
           </span>
         </div>
       </div>
